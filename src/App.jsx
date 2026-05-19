@@ -39,6 +39,24 @@ function AnimatedNumber({ end, suffix = "" }) {
   );
 }
 
+const reviews = [
+  {
+    name: "Marek K.",
+    text: "Pełen profesjonalizm. Remont łazienki wykonany perfekcyjnie i terminowo.",
+  },
+
+  {
+    name: "Anna i Tomasz",
+    text: "Świetny kontakt, dokładność i nowoczesne wykonanie. Polecamy FENIX.",
+  },
+
+  {
+    name: "Krzysztof W.",
+    text: "Najlepsza firma remontowa z jaką współpracowaliśmy. Wszystko dopięte na ostatni guzik.",
+  },
+];
+
+
 function App() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const services = [
@@ -506,83 +524,71 @@ function App() {
         </div>
       </section>
 
-{/* REVIEWS */}
-<section className="max-w-7xl mx-auto px-6 py-24">
 
-  <div className="text-center mb-16">
-    <p className="text-yellow-400 uppercase tracking-[4px] mb-3">
+{/* REVIEWS */}
+<section className="max-w-7xl mx-auto px-6 py-28">
+
+  <div className="text-center mb-20">
+    <p className="text-yellow-400 uppercase tracking-[5px] mb-4">
       Opinie klientów
     </p>
 
-    <h2 className="text-4xl md:text-6xl font-black">
-      Co mówią klienci?
+    <h2 className="text-5xl md:text-7xl font-black leading-tight">
+      Klienci o <span className="text-yellow-400">FENIX</span>
     </h2>
   </div>
 
-  <div className="grid md:grid-cols-3 gap-8">
+  <div className="grid md:grid-cols-3 gap-10">
 
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      viewport={{ once: true }}
-      className="bg-zinc-950 border border-yellow-500/10 rounded-[32px] p-8"
-    >
-      <div className="text-yellow-400 text-2xl mb-4">
-        ★★★★★
-      </div>
+    {reviews.map((review, index) => (
+      <motion.div
+        key={review.name}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: index * 0.15 }}
+        viewport={{ once: true }}
+        className="relative overflow-hidden bg-gradient-to-b from-zinc-900 to-black border border-yellow-500/20 rounded-[40px] p-10 hover:border-yellow-400 hover:-translate-y-3 hover:shadow-[0_0_60px_rgba(234,179,8,0.18)] transition duration-500"
+      >
 
-      <p className="text-gray-300 leading-relaxed mb-6">
-        Profesjonalne podejście, świetny kontakt i bardzo dokładne wykonanie remontu.
-      </p>
+        {/* GOLD BAR */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-yellow-500" />
 
-      <div>
-        <p className="font-bold">Marek K.</p>
-        <p className="text-sm text-gray-500">Bochnia</p>
-      </div>
-    </motion.div>
+        {/* QUOTE */}
+        <div className="absolute top-6 right-8 text-yellow-500/10 text-9xl font-black leading-none">
+          ”
+        </div>
 
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.1 }}
-      viewport={{ once: true }}
-      className="bg-zinc-950 border border-yellow-500/10 rounded-[32px] p-8"
-    >
-      <div className="text-yellow-400 text-2xl mb-4">
-        ★★★★★
-      </div>
+        {/* STARS */}
+        <div className="flex gap-1 text-yellow-400 mb-8 text-3xl tracking-[6px]">
+          ★★★★★
+        </div>
 
-      <p className="text-gray-300 leading-relaxed mb-6">
-        Łazienka wykonana perfekcyjnie. Wszystko terminowo i bardzo estetycznie.
-      </p>
+        {/* TEXT */}
+        <p className="text-gray-300 leading-relaxed mb-10 text-lg italic relative z-10">
+          "{review.text}"
+        </p>
 
-      <div>
-        <p className="font-bold">Anna W.</p>
-        <p className="text-sm text-gray-500">Kraków</p>
-      </div>
-    </motion.div>
+        {/* AUTHOR */}
+        <div className="border-t border-yellow-500/10 pt-6 flex items-center gap-4">
 
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      viewport={{ once: true }}
-      className="bg-zinc-950 border border-yellow-500/10 rounded-[32px] p-8"
-    >
-      <div className="text-yellow-400 text-2xl mb-4">
-        ★★★★★
-      </div>
+          <div className="w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-xl shadow-lg">
+            {review.name.charAt(0)}
+          </div>
 
-      <p className="text-gray-300 leading-relaxed mb-6">
-        Polecam w 100%. Fachowa robota i bardzo dobra komunikacja podczas remontu.
-      </p>
+          <div>
+            <p className="font-black text-lg">
+              {review.name}
+            </p>
 
-      <div>
-        <p className="font-bold">Paweł M.</p>
-        <p className="text-sm text-gray-500">Brzesko</p>
-      </div>
-    </motion.div>
+            <p className="text-gray-500 text-sm">
+              Klient FENIX
+            </p>
+          </div>
+
+        </div>
+
+      </motion.div>
+    ))}
 
   </div>
 </section>
