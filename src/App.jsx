@@ -134,11 +134,11 @@ function App() {
  
                    
           <a
-            href="tel:785321206"
+            href="tel:515839615"
             className="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black px-5 py-3 rounded-2xl font-bold transition duration-300 hover:scale-105 active:scale-95"
           >
             <Phone size={18} />
-            785 321 206
+            515 839 615
           </a>
         </div>
       </header>
@@ -208,7 +208,7 @@ function App() {
               </a>
 
               <a
-                href="tel:785321206"
+                href="tel:515839615"
                 className="border border-yellow-500 text-yellow-400 hover:bg-yellow-500 hover:text-black px-8 py-4 rounded-2xl font-bold text-lg transition duration-300 hover:scale-105 active:scale-95"
               >
                 Zadzwoń teraz
@@ -496,11 +496,11 @@ function App() {
           </p>
 
           <a
-            href="tel:785321206"
+            href="tel:515839615"
             className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-black text-xl hover:bg-zinc-900 transition duration-300 hover:scale-105 active:scale-95"
           >
             <Phone />
-            785 321 206
+            515 839 615
           </a>
 
         </div>
@@ -613,7 +613,7 @@ function App() {
 
               <div className="flex items-center gap-4 bg-black rounded-2xl p-5 border border-yellow-500/10">
                 <Phone className="text-yellow-400" />
-                <span>785 321 206</span>
+                <span>515 839 615</span>
               </div>
 
               <div className="flex items-center gap-4 bg-black rounded-2xl p-5 border border-yellow-500/10">
@@ -690,7 +690,7 @@ function App() {
 
       {/* WHATSAPP */}
       <a
-  href="https://wa.me/48785321206?text=Dzień%20dobry,%20chciałbym%20umówić%20wycenę%20remontu."
+  href="https://wa.me/48515839615?text=Dzień%20dobry,%20chciałbym%20umówić%20wycenę%20remontu."
   target="_blank"
   rel="noopener noreferrer"
   className="fixed bottom-6 right-6 z-50 bg-zinc-950 border border-yellow-500/20 hover:border-yellow-400 text-green-400 w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition duration-300 hover:scale-110"
