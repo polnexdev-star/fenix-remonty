@@ -13,7 +13,8 @@ import {
   X,
 } from "lucide-react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { client } from "./sanityClient";
 import { motion } from "framer-motion";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
@@ -39,26 +40,35 @@ function AnimatedNumber({ end, suffix = "" }) {
   );
 }
 
-const reviews = [
-  {
-    name: "Marek K.",
-    text: "Pełen profesjonalizm. Remont łazienki wykonany perfekcyjnie i terminowo.",
-  },
-
-  {
-    name: "Anna i Tomasz",
-    text: "Świetny kontakt, dokładność i nowoczesne wykonanie. Polecamy FENIX.",
-  },
-
-  {
-    name: "Krzysztof W.",
-    text: "Najlepsza firma remontowa z jaką współpracowaliśmy. Wszystko dopięte na ostatni guzik.",
-  },
-];
-
-
 function App() {
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [realizations, setRealizations] = useState([]);
+
+  useEffect(() => {
+    client
+      .fetch(`*[_type == "review"]{
+        name,
+        text
+      }`)
+      .then((data) => setReviews(data))
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    client
+      .fetch(`*[_type == "realization"]{
+        title,
+        image{
+          asset->{
+            url
+          }
+        }
+      }`)
+      .then((data) => setRealizations(data))
+      .catch(console.error);
+  }, []);
+
   const services = [
     {
       icon: <Home />,
@@ -423,28 +433,26 @@ function App() {
     </div>
 
     <p className="text-gray-400 max-w-xl">
-      Kliknij zdjęcie, aby zobaczyć je w powiększeniu.
+      Zdjęcia realizacji pobierane bezpośrednio z panelu CMS.
     </p>
   </div>
 
   <PhotoProvider>
     <div className="grid md:grid-cols-3 gap-8">
-      {["/realizacja1.jpg", "/realizacja2.jpg", "/realizacja3.jpg"].map(
-        (image, index) => (
-          <PhotoView key={image} src={image}>
-            <motion.img
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              src={image}
-              alt={`Realizacja ${index + 1}`}
-              className="rounded-[32px] h-[520px] w-full object-cover cursor-pointer shadow-2xl"
-            />
-          </PhotoView>
-        )
-      )}
+      {realizations.map((item, index) => (
+        <PhotoView key={item.title} src={item.image.asset.url}>
+          <motion.img
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: index * 0.1 }}
+            viewport={{ once: true }}
+            whileHover={{ scale: 1.03 }}
+            src={item.image.asset.url}
+            alt={item.title}
+            className="rounded-[32px] h-[520px] w-full object-cover cursor-pointer shadow-2xl"
+          />
+        </PhotoView>
+      ))}
     </div>
   </PhotoProvider>
 </section>
