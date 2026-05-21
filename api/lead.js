@@ -9,6 +9,13 @@ const client = createClient({
 });
 
 export default async function handler(req, res) {
+
+if (!process.env.SANITY_API_TOKEN) {
+  return res.status(500).json({
+    error: "Brak SANITY_API_TOKEN w Vercel",
+  });
+}
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
