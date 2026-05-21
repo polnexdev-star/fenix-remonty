@@ -44,6 +44,9 @@ function App() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [realizations, setRealizations] = useState([]);
+  const [beforeAfter, setBeforeAfter] = useState([]);
+  const [contact, setContact] = useState(null);
+  const [services, setServices] = useState([]);
 
   useEffect(() => {
     client
@@ -69,28 +72,50 @@ function App() {
       .catch(console.error);
   }, []);
 
-  const services = [
-    {
-      icon: <Home />,
-      title: "Wykończenia pod klucz",
-      text: "Kompleksowe wykończenie mieszkań i domów od stanu deweloperskiego.",
-    },
-    {
-      icon: <Bath />,
-      title: "Łazienki i kuchnie",
-      text: "Nowoczesne, praktyczne i estetyczne wnętrza wykonane z dbałością o detale.",
-    },
-    {
-      icon: <Paintbrush />,
-      title: "Malowanie i gładzie",
-      text: "Gładzie, malowanie, przygotowanie ścian i dekoracyjne wykończenia.",
-    },
-    {
-      icon: <Hammer />,
-      title: "Remonty generalne",
-      text: "Remonty mieszkań, domów i lokali użytkowych od A do Z.",
-    },
-  ];
+  useEffect(() => {
+  client
+    .fetch(`*[_type == "beforeAfter"]{
+      title,
+      beforeImage{
+        asset->{
+          url
+        }
+      },
+      afterImage{
+        asset->{
+          url
+        }
+      }
+    }`)
+    .then((data) => setBeforeAfter(data))
+    .catch(console.error);
+  }, []);
+
+  useEffect(() => {
+  client
+    .fetch(`*[_type == "contact"][0]`)
+    .then((data) => setContact(data))
+    .catch(console.error);
+}, []);
+  
+
+  useEffect(() => {
+  client
+    .fetch(`*[_type == "service"]{
+      title,
+      text,
+      icon
+    }`)
+    .then((data) => setServices(data))
+    .catch(console.error);
+}, []);
+
+const icons = {
+  home: <Home />,
+  bath: <Bath />,
+  paint: <Paintbrush />,
+  hammer: <Hammer />,
+};
 
   const features = [
     "Darmowa wycena",
@@ -98,6 +123,52 @@ function App() {
     "Kompleksowa obsługa",
     "Nowoczesne wykończenia",
   ];
+
+const [formData, setFormData] = useState({
+  name: "",
+  phone: "",
+  message: "",
+});
+
+const handleChange = (e) => {
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch("/api/lead", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("Błąd API:", result);
+      alert("Błąd wysyłki. Sprawdź konsolę.");
+      return;
+    }
+
+    alert("Zapytanie wysłane!");
+
+    setFormData({
+      name: "",
+      phone: "",
+      message: "",
+    });
+  } catch (error) {
+    console.error("Błąd formularza:", error);
+    alert("Błąd formularza.");
+  }
+};
 
   return (
     <motion.div
@@ -162,12 +233,12 @@ function App() {
  
                    
           <a
-            href="tel:515839615"
-            className="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black px-5 py-3 rounded-2xl font-bold transition duration-300 hover:scale-105 active:scale-95"
-          >
-            <Phone size={18} />
-            515 839 615
-          </a>
+  href={`tel:${contact?.phone}`}
+  className="hidden md:flex items-center gap-2 bg-yellow-500 hover:bg-yellow-400 text-black px-5 py-3 rounded-2xl font-bold transition duration-300 hover:scale-105 active:scale-95"
+>
+  <Phone size={18} />
+  {contact?.phone}
+</a>
         </div>
       </header>
       {mobileMenu && (
@@ -236,7 +307,7 @@ function App() {
               </a>
 
               <a
-                href="tel:515839615"
+                href={`tel:${contact?.phone}`}
                 className="border border-yellow-500 text-yellow-400 hover:bg-yellow-500 hover:text-black px-8 py-4 rounded-2xl font-bold text-lg transition duration-300 hover:scale-105 active:scale-95"
               >
                 Zadzwoń teraz
@@ -402,7 +473,7 @@ function App() {
               >
 
                 <div className="w-16 h-16 bg-yellow-500 text-black rounded-2xl flex items-center justify-center mb-6">
-                  {service.icon}
+                  {icons[service.icon] || <CheckCircle size={32} />}
                 </div>
 
                 <h3 className="text-2xl font-black mb-4">
@@ -433,7 +504,7 @@ function App() {
     </div>
 
     <p className="text-gray-400 max-w-xl">
-      Zdjęcia realizacji pobierane bezpośrednio z panelu CMS.
+      Kliknij zdjęcie, aby zobaczyć je w powiększeniu.
     </p>
   </div>
 
@@ -469,43 +540,45 @@ function App() {
     </h2>
   </div>
 
-  <div className="grid md:grid-cols-2 gap-8">
-    <motion.div
-      initial={{ opacity: 0, x: -40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
-      className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
-    >
-      <span className="absolute top-6 left-6 z-10 bg-black/80 text-yellow-400 px-5 py-2 rounded-full font-bold">
-        PRZED
-      </span>
+  {beforeAfter.map((item, index) => (
+    <div key={item.title} className="grid md:grid-cols-2 gap-8 mb-12">
+      <motion.div
+        initial={{ opacity: 0, x: -40 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, delay: index * 0.1 }}
+        viewport={{ once: true }}
+        className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
+      >
+        <span className="absolute top-6 left-6 z-10 bg-black/80 text-yellow-400 px-5 py-2 rounded-full font-bold">
+          PRZED
+        </span>
 
-      <img
-        src="/before.jpg"
-        alt="Przed remontem"
-        className="w-full h-[520px] object-cover"
-      />
-    </motion.div>
+        <img
+          src={item.beforeImage.asset.url}
+          alt={`${item.title} przed`}
+          className="w-full h-[520px] object-cover"
+        />
+      </motion.div>
 
-    <motion.div
-      initial={{ opacity: 0, x: 40 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
-      className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
-    >
-      <span className="absolute top-6 left-6 z-10 bg-yellow-500 text-black px-5 py-2 rounded-full font-black">
-        PO
-      </span>
+      <motion.div
+        initial={{ opacity: 0, x: 40 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.7, delay: index * 0.1 }}
+        viewport={{ once: true }}
+        className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
+      >
+        <span className="absolute top-6 left-6 z-10 bg-yellow-500 text-black px-5 py-2 rounded-full font-black">
+          PO
+        </span>
 
-      <img
-        src="/after.jpg"
-        alt="Po remoncie"
-        className="w-full h-[520px] object-cover"
-      />
-    </motion.div>
-  </div>
+        <img
+          src={item.afterImage.asset.url}
+          alt={`${item.title} po`}
+          className="w-full h-[520px] object-cover"
+        />
+      </motion.div>
+    </div>
+  ))}
 </section>
 
       {/* CTA */}
@@ -522,12 +595,12 @@ function App() {
           </p>
 
           <a
-            href="tel:515839615"
-            className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-black text-xl hover:bg-zinc-900 transition duration-300 hover:scale-105 active:scale-95"
-          >
-            <Phone />
-            515 839 615
-          </a>
+  href={`tel:${contact?.phone}`}
+  className="inline-flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-black text-xl hover:bg-zinc-900 transition duration-300 hover:scale-105 active:scale-95"
+>
+  <Phone />
+  {contact?.phone}
+</a>
 
         </div>
       </section>
@@ -555,7 +628,7 @@ function App() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: index * 0.15 }}
         viewport={{ once: true }}
-        className="relative overflow-hidden bg-gradient-to-b from-zinc-900 to-black border border-yellow-500/20 rounded-[40px] p-10 hover:border-yellow-400 hover:-translate-y-3 hover:shadow-[0_0_60px_rgba(234,179,8,0.18)] transition duration-500"
+        className="relative overflow-hidden flex flex-col bg-gradient-to-b from-zinc-900 to-black border border-yellow-500/20 rounded-[40px] p-10 min-h-[420px] hover:border-yellow-400 hover:-translate-y-2 hover:shadow-[0_0_50px_rgba(234,179,8,0.18)] transition duration-500"
       >
 
         {/* GOLD BAR */}
@@ -577,7 +650,7 @@ function App() {
         </p>
 
         {/* AUTHOR */}
-        <div className="border-t border-yellow-500/10 pt-6 flex items-center gap-4">
+        <div className="border-t border-yellow-500/10 pt-6 mt-auto flex items-center gap-4">
 
           <div className="w-14 h-14 rounded-full bg-yellow-500 text-black flex items-center justify-center font-black text-xl shadow-lg">
             {review.name.charAt(0)}
@@ -627,17 +700,19 @@ function App() {
 
               <div className="flex items-center gap-4 bg-black rounded-2xl p-5 border border-yellow-500/10">
                 <Phone className="text-yellow-400" />
-                <span>515 839 615</span>
+                <span>{contact?.phone}</span>
               </div>
 
               <div className="flex items-center gap-4 bg-black rounded-2xl p-5 border border-yellow-500/10">
                 <Mail className="text-yellow-400" />
-                <span>infobiuro.fenix@gmail.com</span>
+                <a href={`mailto:${contact?.email}`}>
+  {contact?.email}
+</a>
               </div>
 
               <div className="flex items-center gap-4 bg-black rounded-2xl p-5 border border-yellow-500/10">
                 <MapPin className="text-yellow-400" />
-                <span>Bochnia, ul. Trudna 37A/32</span>
+                <span>{contact?.address}</span>
               </div>
               <div className="mt-6 overflow-hidden rounded-3xl border border-yellow-500/10">
   <iframe
@@ -651,26 +726,31 @@ function App() {
             </div>
           </div>
 
-          <form
-  action="https://formspree.io/f/mpqnzwdb"
-  method="POST"
+         <form
+  onSubmit={handleSubmit}
   className="bg-black rounded-[32px] p-8 border border-yellow-500/10 space-y-5"
 >
 
-  <input
-    name="imie"
-    className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
-    placeholder="Imię i nazwisko"
-  />
+ <input
+  name="name"
+  value={formData.name}
+  onChange={handleChange}
+  className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
+  placeholder="Imię i nazwisko"
+/>
 
   <input
-    name="telefon"
+  name="phone"
+  value={formData.phone}
+  onChange={handleChange}
     className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
     placeholder="Numer telefonu"
   />
 
   <textarea
-    name="wiadomosc"
+  name="message"
+  value={formData.message}
+  onChange={handleChange}
     className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
     rows="6"
     placeholder="Opisz zakres prac"
