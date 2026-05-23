@@ -25,13 +25,14 @@ if (!process.env.SANITY_API_TOKEN) {
   }
 
   try {
-    const { name, phone, message } = req.body;
+    const { name, phone, message, filesLink } = req.body;
 
     const result = await client.create({
       _type: "lead",
       name,
       phone,
       message,
+      filesLink,
       createdAt: new Date().toISOString(),
     });
 
@@ -49,6 +50,10 @@ if (!process.env.SANITY_API_TOKEN) {
     <p><strong>Wiadomość:</strong></p>
 
     <p>${message}</p>
+
+    <p><strong>Link do plików:</strong></p>
+
+<p>${filesLink}</p>
   `,
 });
 

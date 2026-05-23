@@ -128,6 +128,7 @@ const [formData, setFormData] = useState({
   name: "",
   phone: "",
   message: "",
+  filesLink: "",
 });
 
 const handleChange = (e) => {
@@ -164,6 +165,7 @@ const handleSubmit = async (e) => {
       name: "",
       phone: "",
       message: "",
+      filesLink: "",
     });
   } catch (error) {
     console.error("Błąd formularza:", error);
@@ -747,6 +749,14 @@ const handleSubmit = async (e) => {
     className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
     placeholder="Numer telefonu"
   />
+
+<input
+  name="filesLink"
+  value={formData.filesLink}
+  onChange={handleChange}
+  className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
+  placeholder="Link do zdjęć, projektu lub wizualizacji"
+/>
 
   <textarea
   name="message"
