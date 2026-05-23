@@ -47,6 +47,7 @@ function App() {
   const [beforeAfter, setBeforeAfter] = useState([]);
   const [contact, setContact] = useState(null);
   const [services, setServices] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
     client
@@ -107,6 +108,22 @@ function App() {
       icon
     }`)
     .then((data) => setServices(data))
+    .catch(console.error);
+}, []);
+
+useEffect(() => {
+  client
+    .fetch(`*[_type == "blog"] | order(publishedAt desc){
+      title,
+      excerpt,
+      slug,
+      image{
+        asset->{
+          url
+        }
+      }
+    }`)
+    .then((data) => setBlogs(data))
     .catch(console.error);
 }, []);
 
@@ -674,6 +691,44 @@ const handleSubmit = async (e) => {
       </motion.div>
     ))}
 
+  </div>
+</section>
+
+{/* BLOG */}
+<section id="blog" className="max-w-7xl mx-auto px-6 py-24">
+  <div className="text-center mb-16">
+    <p className="text-yellow-400 uppercase tracking-[4px] mb-3">
+      Blog
+    </p>
+
+    <h2 className="text-4xl md:text-6xl font-black">
+      Porady remontowe
+    </h2>
+  </div>
+
+  <div className="grid md:grid-cols-3 gap-8">
+    {blogs.map((post) => (
+      <div
+        key={post.title}
+        className="bg-zinc-950 border border-yellow-500/10 rounded-[32px] overflow-hidden hover:border-yellow-400 transition duration-300"
+      >
+        <img
+          src={post.image?.asset?.url}
+          alt={post.title}
+          className="w-full h-64 object-cover"
+        />
+
+        <div className="p-8">
+          <h3 className="text-2xl font-black mb-4">
+            {post.title}
+          </h3>
+
+          <p className="text-gray-400 leading-relaxed">
+            {post.excerpt}
+          </p>
+        </div>
+      </div>
+    ))}
   </div>
 </section>
 
