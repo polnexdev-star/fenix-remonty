@@ -755,7 +755,7 @@ const handleSubmit = async (e) => {
   value={formData.filesLink}
   onChange={handleChange}
   className="w-full bg-zinc-950 border border-yellow-500/10 rounded-2xl px-5 py-4 outline-none focus:border-yellow-400"
-  placeholder="Link do zdjęć, projektu lub wizualizacji"
+  placeholder="Link do zdjęć/projektu (opcjonalnie)"
 />
 
   <textarea
