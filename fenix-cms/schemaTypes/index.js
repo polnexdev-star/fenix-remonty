@@ -4,6 +4,7 @@ import beforeAfter from './beforeAfter'
 import contact from './contact'
 import service from './service'
 import lead from './lead'
+import blog from './blog'
 
 export const schemaTypes = [
   review,
@@ -12,4 +13,5 @@ export const schemaTypes = [
   contact,
   service,
   lead,
+  blog,
 ]
