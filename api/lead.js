@@ -35,8 +35,8 @@ if (!process.env.SANITY_API_TOKEN) {
       createdAt: new Date().toISOString(),
     });
 
-    await resend.emails.send({
-  from: "FENIX <onboarding@resend.dev>",
+   const emailResult = await resend.emails.send({
+  from: "FENIX <kontakt@mail.fenixremonty.pl>",
   to: "infobiuro.fenix@gmail.com",
   subject: "Nowe zapytanie ze strony FENIX",
   html: `
@@ -51,6 +51,8 @@ if (!process.env.SANITY_API_TOKEN) {
     <p>${message}</p>
   `,
 });
+
+console.log("Resend result:", emailResult);
 
     res.status(200).json(result);
   } catch (error) {
