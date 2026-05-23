@@ -149,7 +149,8 @@ const handleSubmit = async (e) => {
       body: JSON.stringify(formData),
     });
 
-    const result = await response.json();
+    const text = await response.text();
+    const result = text ? JSON.parse(text) : {};
 
     if (!response.ok) {
       console.error("Błąd API:", result);
