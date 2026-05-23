@@ -40,6 +40,71 @@ function AnimatedNumber({ end, suffix = "" }) {
   );
 }
 
+function BlogPost({ slug }) {
+  const [post, setPost] = useState(null);
+
+  useEffect(() => {
+    client
+      .fetch(
+        `*[_type == "blog" && slug.current == $slug][0]{
+          title,
+          excerpt,
+          content,
+          image{
+            asset->{
+              url
+            }
+          }
+        }`,
+        { slug }
+      )
+      .then((data) => setPost(data))
+      .catch(console.error);
+  }, [slug]);
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        Ładowanie wpisu...
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white px-6 py-24">
+      <div className="max-w-4xl mx-auto">
+        <a href="/" className="text-yellow-400 font-bold">
+          ← Wróć na stronę główną
+        </a>
+
+        <h1 className="text-4xl md:text-6xl font-black mt-10 mb-6">
+          {post.title}
+        </h1>
+
+        <p className="text-gray-400 text-xl mb-10">
+          {post.excerpt}
+        </p>
+
+        {post.image?.asset?.url && (
+          <img
+            src={post.image.asset.url}
+            alt={post.title}
+            className="w-full rounded-[32px] mb-10"
+          />
+        )}
+
+        <div className="space-y-5 text-gray-300 text-lg leading-relaxed">
+          {post.content?.map((block) => (
+            <p key={block._key}>
+              {block.children?.map((child) => child.text).join("")}
+            </p>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [reviews, setReviews] = useState([]);
@@ -190,13 +255,23 @@ const handleSubmit = async (e) => {
   }
 };
 
-  return (
-    <motion.div
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{ duration: 0.8 }}
-  className="min-h-screen bg-black text-white overflow-x-hidden"
->
+const currentPath = window.location.pathname;
+
+if (currentPath.startsWith("/blog/")) {
+  const slug = currentPath.replace("/blog/", "");
+
+  return <BlogPost slug={slug} />;
+}
+
+return (
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="min-h-screen bg-black text-white overflow-x-hidden"
+        >
+
       {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-black/70 border-b border-yellow-500/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
@@ -708,8 +783,9 @@ const handleSubmit = async (e) => {
 
   <div className="grid md:grid-cols-3 gap-8">
     {blogs.map((post) => (
-      <div
-        key={post.title}
+      <a
+  key={post.title}
+  href={`/blog/${post.slug?.current}`}
         className="bg-zinc-950 border border-yellow-500/10 rounded-[32px] overflow-hidden hover:border-yellow-400 transition duration-300"
       >
         <img
@@ -727,7 +803,7 @@ const handleSubmit = async (e) => {
             {post.excerpt}
           </p>
         </div>
-      </div>
+      </a>
     ))}
   </div>
 </section>

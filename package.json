@@ -17,6 +17,7 @@
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.6",
     "react-photo-view": "^1.2.7",
+    "react-router-dom": "^7.15.1",
     "resend": "^6.12.3"
   },
   "devDependencies": {
