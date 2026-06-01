@@ -636,6 +636,8 @@ return (
 </section>
 
 {/* BEFORE AFTER */}
+
+
 <section className="max-w-7xl mx-auto px-6 py-24">
   <div className="text-center mb-16">
     <p className="text-yellow-400 uppercase tracking-[4px] mb-3">
@@ -647,6 +649,8 @@ return (
     </h2>
   </div>
 
+  
+
   {beforeAfter.map((item, index) => (
     <motion.div
       key={item.title}
@@ -656,16 +660,20 @@ return (
       viewport={{ once: true }}
       className="max-w-5xl mx-auto mb-20"
     >
-      <h3 className="text-3xl font-black text-center mb-8">
-        {item.title}
-      </h3>
+     <h3 className="text-3xl font-black text-center mb-4">
+  {item.title}
+</h3>
 
-      <div className="overflow-hidden rounded-[40px] border border-yellow-500/10 shadow-2xl">
-        <ReactCompareImage
-          leftImage={item.beforeImage.asset.url}
-          rightImage={item.afterImage.asset.url}
-        />
-      </div>
+<p className="text-center text-gray-400 mb-8">
+  Przesuń suwak, aby zobaczyć efekt remontu
+</p>
+
+      <div className="max-w-xl mx-auto overflow-hidden rounded-[40px] border border-yellow-500/10 shadow-2xl">
+  <ReactCompareImage
+    leftImage={item.beforeImage.asset.url}
+    rightImage={item.afterImage.asset.url}
+  />
+</div>
     </motion.div>
   ))}
 </section>
