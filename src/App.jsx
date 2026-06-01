@@ -18,6 +18,7 @@ import { client } from "./sanityClient";
 import { motion } from "framer-motion";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import ReactCompareImage from "react-compare-image";
 
 function AnimatedNumber({ end, suffix = "" }) {
   const [count, setCount] = useState(0);
@@ -312,6 +313,13 @@ return (
             </a>
 
             <a
+  href="#blog"
+  className="hover:text-yellow-400 transition duration-300"
+>
+  Blog
+</a>
+
+            <a
               href="#kontakt"
               className="hover:text-yellow-400 transition duration-300"
             >
@@ -351,6 +359,10 @@ return (
       <a href="#realizacje" onClick={() => setMobileMenu(false)}>
         Realizacje
       </a>
+
+          <a href="#blog" onClick={() => setMobileMenu(false)}>
+  Blog
+</a>
 
       <a href="#kontakt" onClick={() => setMobileMenu(false)}>
         Kontakt
@@ -636,43 +648,25 @@ return (
   </div>
 
   {beforeAfter.map((item, index) => (
-    <div key={item.title} className="grid md:grid-cols-2 gap-8 mb-12">
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: index * 0.1 }}
-        viewport={{ once: true }}
-        className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
-      >
-        <span className="absolute top-6 left-6 z-10 bg-black/80 text-yellow-400 px-5 py-2 rounded-full font-bold">
-          PRZED
-        </span>
+    <motion.div
+      key={item.title}
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, delay: index * 0.1 }}
+      viewport={{ once: true }}
+      className="max-w-5xl mx-auto mb-20"
+    >
+      <h3 className="text-3xl font-black text-center mb-8">
+        {item.title}
+      </h3>
 
-        <img
-          src={item.beforeImage.asset.url}
-          alt={`${item.title} przed`}
-          className="w-full h-[520px] object-cover"
+      <div className="overflow-hidden rounded-[40px] border border-yellow-500/10 shadow-2xl">
+        <ReactCompareImage
+          leftImage={item.beforeImage.asset.url}
+          rightImage={item.afterImage.asset.url}
         />
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.7, delay: index * 0.1 }}
-        viewport={{ once: true }}
-        className="relative overflow-hidden rounded-[40px] border border-yellow-500/10"
-      >
-        <span className="absolute top-6 left-6 z-10 bg-yellow-500 text-black px-5 py-2 rounded-full font-black">
-          PO
-        </span>
-
-        <img
-          src={item.afterImage.asset.url}
-          alt={`${item.title} po`}
-          className="w-full h-[520px] object-cover"
-        />
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
   ))}
 </section>
 
