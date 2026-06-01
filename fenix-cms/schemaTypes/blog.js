@@ -27,6 +27,18 @@ export default {
     },
 
     {
+  name: 'seoTitle',
+  title: 'SEO tytuł',
+  type: 'string',
+},
+
+{
+  name: 'seoDescription',
+  title: 'SEO opis',
+  type: 'text',
+},
+
+    {
       name: 'content',
       title: 'Treść',
       type: 'array',
