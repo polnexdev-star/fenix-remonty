@@ -19,6 +19,14 @@ export default {
       title: 'Wiadomość',
       type: 'text',
     },
+
+{
+  name: 'uploadedFiles',
+  title: 'Załączone pliki',
+  type: 'array',
+  of: [{ type: 'url' }],
+},
+
     {
       name: 'createdAt',
       title: 'Data zgłoszenia',

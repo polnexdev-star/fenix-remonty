@@ -25,7 +25,7 @@ if (!process.env.SANITY_API_TOKEN) {
   }
 
   try {
-    const { name, phone, message, filesLink } = req.body;
+    const { name, phone, message, filesLink, uploadedFiles = [] } = req.body;
 
     const result = await client.create({
       _type: "lead",
@@ -33,6 +33,7 @@ if (!process.env.SANITY_API_TOKEN) {
       phone,
       message,
       filesLink,
+      uploadedFiles,
       createdAt: new Date().toISOString(),
     });
 
@@ -54,6 +55,13 @@ if (!process.env.SANITY_API_TOKEN) {
     <p><strong>Link do plików:</strong></p>
 
 <p>${filesLink}</p>
+<p><strong>Załączone pliki:</strong></p>
+
+<ul>
+  ${uploadedFiles
+    .map((url) => `<li><a href="${url}">${url}</a></li>`)
+    .join("")}
+</ul>
   `,
 });
 

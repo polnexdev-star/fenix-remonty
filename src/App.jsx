@@ -214,6 +214,9 @@ const [formData, setFormData] = useState({
   filesLink: "",
 });
 
+const [selectedFiles, setSelectedFiles] = useState([]);
+const [isUploading, setIsUploading] = useState(false);
+
 const handleChange = (e) => {
   setFormData({
     ...formData,
@@ -221,8 +224,60 @@ const handleChange = (e) => {
   });
 };
 
+const handleFilesChange = (e) => {
+  const files = Array.from(e.target.files);
+
+  if (files.length > 10) {
+    alert("Możesz dodać maksymalnie 10 plików.");
+    return;
+  }
+
+  setSelectedFiles(files);
+};
+
+const uploadFilesToCloudinary = async () => {
+  if (selectedFiles.length === 0) {
+    return [];
+  }
+
+  setIsUploading(true);
+
+  try {
+    const uploadedFiles = [];
+
+    for (const file of selectedFiles) {
+      const data = new FormData();
+
+      data.append("file", file);
+      data.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error?.message || "Błąd uploadu pliku");
+      }
+
+      uploadedFiles.push(result.secure_url);
+    }
+
+    return uploadedFiles;
+  } finally {
+    setIsUploading(false);
+  }
+};
+
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  const uploadedFiles = await uploadFilesToCloudinary();
 
   try {
     const response = await fetch("/api/lead", {
@@ -230,7 +285,10 @@ const handleSubmit = async (e) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+  ...formData,
+  uploadedFiles,
+}),
     });
 
     const text = await response.text();
@@ -900,13 +958,37 @@ return (
     placeholder="Opisz zakres prac"
   />
 
+  <div className="space-y-3">
+  <label className="block text-sm font-semibold">
+    Dodaj zdjęcia lub projekt (opcjonalnie)
+  </label>
+
+  <input
+    type="file"
+    multiple
+    accept=".jpg,.jpeg,.png,.webp,.pdf"
+    onChange={handleFilesChange}
+    className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
+  />
+
+  {selectedFiles.length > 0 && (
+    <p className="text-sm text-green-400">
+      Wybrano plików: {selectedFiles.length}
+    </p>
+  )}
+</div>
+
   <button
-    type="submit"
-    className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-2xl transition duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer"
-  >
-    <MessageCircle size={20} />
-    Wyślij zapytanie
-  </button>
+  type="submit"
+  disabled={isUploading}
+  className="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-4 rounded-2xl transition duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  <MessageCircle size={20} />
+
+  {isUploading
+    ? "Przesyłanie plików..."
+    : "Wyślij zapytanie"}
+</button>
 
 </form>
         </div>
