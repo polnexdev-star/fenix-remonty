@@ -19,6 +19,7 @@ import { motion } from "framer-motion";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import ReactCompareImage from "react-compare-image";
+import { Paperclip } from "lucide-react";
 
 function AnimatedNumber({ end, suffix = "" }) {
   const [count, setCount] = useState(0);
@@ -963,13 +964,27 @@ return (
     Dodaj zdjęcia lub projekt (opcjonalnie)
   </label>
 
-  <input
-    type="file"
-    multiple
-    accept=".jpg,.jpeg,.png,.webp,.pdf"
-    onChange={handleFilesChange}
-    className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3"
-  />
+
+
+  <label className="flex items-center justify-center gap-3 w-full rounded-xl border border-zinc-700 bg-zinc-900 p-4 cursor-pointer hover:border-yellow-500 transition">
+    
+    <Paperclip size={20} />
+
+    <span>
+      {selectedFiles.length > 0
+        ? `Wybrano plików: ${selectedFiles.length}`
+        : "Dodaj zdjęcia lub PDF"}
+    </span>
+
+    <input
+      type="file"
+      multiple
+      accept=".jpg,.jpeg,.png,.webp,.pdf"
+      onChange={handleFilesChange}
+      className="hidden"
+    />
+  </label>
+
 
   {selectedFiles.length > 0 && (
     <p className="text-sm text-green-400">

@@ -27,6 +27,22 @@ export default {
   of: [{ type: 'url' }],
 },
 
+{
+  name: 'status',
+  title: 'Status',
+  type: 'string',
+  options: {
+    list: [
+      { title: 'Nowe', value: 'new' },
+      { title: 'W trakcie wyceny', value: 'quote' },
+      { title: 'Umówione', value: 'scheduled' },
+      { title: 'Zrealizowane', value: 'completed' },
+      { title: 'Odrzucone', value: 'rejected' },
+    ],
+  },
+  initialValue: 'new',
+},
+
     {
       name: 'createdAt',
       title: 'Data zgłoszenia',
