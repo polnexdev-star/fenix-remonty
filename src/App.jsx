@@ -336,7 +336,10 @@ return (
       <header className="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-black/70 border-b border-yellow-500/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
 
-          <div className="flex items-center gap-3">
+          <a
+  href="#home"
+  className="flex items-center gap-3 cursor-pointer"
+>
             <img
               src="/logo.jpg"
               alt="Fenix logo"
@@ -352,7 +355,7 @@ return (
                 Remonty i Wykończenia
               </p>
             </div>
-          </div>
+          </a>
 
           <nav className="hidden lg:flex items-center gap-8 text-sm text-gray-300">
 
@@ -431,7 +434,7 @@ return (
 )}
 
       {/* HERO */}
-      <section className="relative pt-36 pb-24">
+      <section id="home" className="relative pt-36 pb-24">
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(234,179,8,0.18),transparent_35%),linear-gradient(180deg,#050505,#000)]" />
 
@@ -1010,18 +1013,34 @@ return (
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-black py-10 border-t border-yellow-500/10">
+<footer className="bg-black py-10 border-t border-yellow-500/10">
+  <div className="max-w-7xl mx-auto px-6">
+    <div className="flex flex-col md:flex-row gap-4 justify-between items-center text-gray-500 text-center md:text-left">
+      <p>© 2026 FENIX Remonty i Wykończenia</p>
 
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-4 justify-between items-center text-gray-500">
+      <p>
+        Bochnia • Remonty • Wykończenia wnętrz
+      </p>
+    </div>
 
-          <p>© 2026 FENIX Remonty i Wykończenia</p>
+    <div className="mt-6 pt-6 border-t border-white/10 text-center">
+      <a
+        href="https://www.polnexdev.pl"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group inline-flex items-center gap-2 text-sm font-black transition hover:scale-[1.03]"
+      >
+        <span className="text-gray-500">
+          Strona wykonana przez
+        </span>
 
-          <p>
-            Bochnia • Remonty • Wykończenia wnętrz
-          </p>
-
-        </div>
-      </footer>
+        <span className="text-[#d7ff70] transition group-hover:translate-x-1">
+          Polnex.dev →
+        </span>
+      </a>
+    </div>
+  </div>
+</footer>
 
       {/* WHATSAPP */}
       <a
